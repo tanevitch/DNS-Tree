@@ -7,7 +7,7 @@ root = Node("root")
 
 def doesnt_exist(dom_node, dom, length):
     if (length>=0):
-        print("<",dom_node.name,"> will delegate a new domine..")
+        print("<",dom_node.name,"> will delegate a new domain..")
         print(dom[length]," domain name will be created. Accept? Y/n")
         opt = input()
         print()
@@ -22,16 +22,16 @@ def doesnt_exist(dom_node, dom, length):
             print()
             return
 
-def search_domine(dom, length, dom_node):
+def search_domain(dom, length, dom_node):
     ok= False
     if (length >= 0):
         for child in dom_node.children:
             if (child.name == dom[length]):
-                search_domine(dom, length-1, child)
+                search_domain(dom, length-1, child)
                 ok= True    
                 break
         if (not ok):
-            print("<",dom_node.name,"> will delegate a new domine..")
+            print("<",dom_node.name,"> will delegate a new domain..")
             print(dom[length]," domain name will be created. Accept? Y/n")
             opt = input()
             print()
@@ -64,10 +64,10 @@ def create_node(parsed_dom):
             print("///  Operation cancelled")
             print()
     else:      
-        search_domine(parsed_dom, length, root)
+        search_domain(parsed_dom, length, root)
 
     '''length = len(parsed_dom)-1
-    search_domine(parsed_dom, length, root)'''
+    search_domain(parsed_dom, length, root)'''
 
 def create_from_txt():
     file = open("input.txt", "r")
@@ -85,9 +85,10 @@ def search_in_tree(dom, length, node):
 
 
 def menu():
-    print('Enter 1 for create a DNS tree from .txt')
-    print('Enter 2 for add a node (domain name)')
-    print('Enter 3 for search a domain name in the DNS tree')
+    print('Enter 1 to create a DNS tree from .txt')
+    print('Enter 2 to add a node (domain name)')
+    print('Enter 3 to search a domain name in the DNS tree')
+    print('Enter 4 for EXIT')
     opt = input("Your selection: ")
     if (int(opt) == 1): 
         create_from_txt()
@@ -123,6 +124,11 @@ print('OUTPUT DNS TREE')
 for pre, fill, node in RenderTree(root):
     print("%s%s" % (pre, node.name))
 
-DotExporter(root).to_picture("udo.png")
+DotExporter(root).to_picture("DNSTree.png")
 
-#Casos base: Si agregás un dominio, te va a pedir permiso para crear el TLD
+#La gracia de esto es que te va mostrando qué es lo que agrega, 
+# onda vos agarrás y decís "ah bueno, a ver, voy a agregar un google.com. O un .ar", y te va a decir que ".ar" y ".com" se van a crear como TLD
+# Y después me pareció que estaba bueno emular el tema de la delegación de dominios, si bien claramente acá se corre como superadmin,
+# por ejemplo ponele que el dominio google.com ya existe, y quiero agregar mail.google.com: la idea es que
+# el que te tiene que dar permiso es el autoritario de ese dominio o sea en este caso google.com. Y bueno, por eso es que
+# te dice "che mirá que estás haciendo de cuenta que sos admin de este auth sv, por eso podés agregarle dominio, la delegación de más arriba está hecha"
