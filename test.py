@@ -48,8 +48,14 @@ def search_domain(dom, length, dom_node):
 
 def create_node(parsed_dom):
     length = len(parsed_dom)-1
- 
-    if (search_in_tree(parsed_dom, length, root) == None):
+
+    ok = False
+    for child in root.children:
+            if (child.name == parsed_dom[length]):
+                search_domain(parsed_dom, length-1, child)
+                ok= True    
+                break
+    if (not ok):
         print()
         print("Add <",parsed_dom[length], "> as new TLD name? Y/n")
         opt = input()
@@ -63,6 +69,7 @@ def create_node(parsed_dom):
         else:
             print("///  Operation cancelled")
             print()
+            return
     else:      
         search_domain(parsed_dom, length, root)
 
@@ -77,33 +84,39 @@ def create_from_txt():
         create_node(parsed_dom)
 
 def search_in_tree(dom, length, node):
+    x = None
+    if (node.name == dom[length]):
+        return node
     if (length>=0):
         for child in node.children:
             if (child.name == dom[length]):
-                search_in_tree(dom, length, child)
-                return child
-
+                x= search_in_tree(dom, length-1, child)
+    return x
 
 def menu():
     print('Enter 1 to create a DNS tree from .txt')
     print('Enter 2 to add a node (domain name)')
     print('Enter 3 to search a domain name in the DNS tree')
-    print('Enter 4 for EXIT')
+    print('Enter 4 to EXIT')
     opt = input("Your selection: ")
     if (int(opt) == 1): 
         create_from_txt()
     else:
         if (int(opt) == 2):
-            dom= input("Insert the domain name for create a new node // Ex: 'mail.google.com' --> ")
+            dom= input("Insert the domain name to create a new node // Ex: 'mail.google.com' --> ")
             parsed_dom = dom.split(".") 
             if (parsed_dom[0] == ""):
                 parsed_dom.remove("")
             create_node(parsed_dom)
         else:
             if (int(opt) == 3):
-                dom = input("Insert the domain name for search // Ex: 'google.com' --> ")
+                dom = input("Insert the domain name to search // Ex: 'google.com' --> ")
                 parsed_dom = dom.split(".")
-                print(search_in_tree(parsed_dom, len(parsed_dom)-1, root))
+                
+                if (search_in_tree(parsed_dom, len(parsed_dom)-1, root) != None):
+                    print("<",dom,"> was in DNS Tree")
+                else:
+                    print("<",dom,"> was not in DNS Tree")
             else:
                 print("EXIT")
 
@@ -113,8 +126,8 @@ print('-----------------------------------')
 ok = True
 while (ok):   
     menu()
-    opt = input("Continue..? Y/n ")
-    if (opt.upper() == "N"):
+    opt = input("Enter F to finish (any other key to continue) ")
+    if (opt.upper() == "F"):
         ok= False
 #------------------------------------------------------------------------------------------------------------
 
