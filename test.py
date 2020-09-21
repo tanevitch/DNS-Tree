@@ -48,7 +48,6 @@ def search_domain(dom, length, dom_node):
 
 def create_node(parsed_dom):
     length = len(parsed_dom)-1
-
     ok = False
     for child in root.children:
             if (child.name == parsed_dom[length]):
