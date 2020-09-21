@@ -1,9 +1,9 @@
-from anytree import Node, RenderTree
+from anytree import Node, RenderTree, search
 from anytree.exporter import DotExporter
 
-#root= Node("root", children= [ Node("com", children= [ Node("google")]), Node("edu"), Node("gob"), Node("mil"), Node("org"), Node("net"), Node("int") ])   
+root= Node("root", children= [ Node("com", children= [ Node("google")]), Node("edu"), Node("gob"), Node("mil"), Node("org"), Node("net"), Node("int") ])   
 
-root = Node("root") 
+#root = Node("root") 
 
 def doesnt_exist(dom_node, dom, length):
     if (length>=0):
@@ -20,14 +20,15 @@ def doesnt_exist(dom_node, dom, length):
         else:
             print('///  Operation cancelled')
             print()
-            return
+            return 0
 
 def search_domain(dom, length, dom_node):
     ok= False
     if (length >= 0):
         for child in dom_node.children:
             if (child.name == dom[length]):
-                search_domain(dom, length-1, child)
+                if (search_domain(dom, length-1, child) == 0):
+                    return 0
                 ok= True    
                 break
         if (not ok):
@@ -40,20 +41,22 @@ def search_domain(dom, length, dom_node):
                 l = list(dom_node.children)
                 l.append(new)
                 dom_node.children = l
-                doesnt_exist(new, dom, length-1)
+                if (doesnt_exist(new, dom, length-1) == 0):
+                    return 0 
             else:
                 print('///  Operation cancelled')
                 print()
-                return
+                return 0
 
 def create_node(parsed_dom):
     length = len(parsed_dom)-1
     ok = False
     for child in root.children:
             if (child.name == parsed_dom[length]):
-                search_domain(parsed_dom, length-1, child)
+                if (search_domain(parsed_dom, length-1, child) == 0):
+                    return
                 ok= True    
-                break
+                
     if (not ok):
         print()
         print("Add <",parsed_dom[length], "> as new TLD name? Y/n")
@@ -82,14 +85,13 @@ def create_from_txt():
         parsed_dom = prev[0].split(".")
         create_node(parsed_dom)
 
+
 def search_in_tree(dom, length, node):
-    x = None
-    if (node.name == dom[length]):
-        return node
-    if (length>=0):
-        for child in node.children:
-            if (child.name == dom[length]):
-                x= search_in_tree(dom, length-1, child)
+    x = False    
+    for child in node.children:           
+        x= x or search_in_tree(dom, length-1, child)
+    if (node.name == dom[length] and length == 0):
+        return True    
     return x
 
 def menu():
@@ -111,11 +113,12 @@ def menu():
             if (int(opt) == 3):
                 dom = input("Insert the domain name to search // Ex: 'google.com' --> ")
                 parsed_dom = dom.split(".")
-                
-                if (search_in_tree(parsed_dom, len(parsed_dom)-1, root) != None):
+                parsed_dom.append("")
+                print(search_in_tree(parsed_dom, len(parsed_dom)-1, root))
+                '''if (search_in_tree(parsed_dom, len(parsed_dom)-1, root) != None):
                     print("<",dom,"> was in DNS Tree")
                 else:
-                    print("<",dom,"> was not in DNS Tree")
+                    print("<",dom,"> was not in DNS Tree")'''
             else:
                 print("EXIT")
 
