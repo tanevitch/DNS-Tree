@@ -1,10 +1,10 @@
-from anytree import Node, RenderTree, search
+from anytree import Node, RenderTree
 from anytree.exporter import DotExporter
 
 #este es por si tienen ganas de tener los tld más genéricos ya cargados y no tener que hacerlo a mano
-#root= Node("root", children= [ Node("com", children= [ Node("google")]), Node("edu"), Node("gob"), Node("mil"), Node("org"), Node("net"), Node("int") ])   
+root= Node("root", children= [ Node("com", children= [ Node("google")]), Node("edu"), Node("gob"), Node("mil"), Node("org"), Node("net"), Node("int") ])   
 
-root = Node("root") 
+#root = Node("root") 
 
 def search_domain(dom, length, dom_node):
     ok= False
@@ -66,14 +66,15 @@ def create_from_txt():
         parsed_dom = prev[0].split(".")
         create_node(parsed_dom)
 
+  
 
 def search_in_tree(dom, length, node):
-    x = False    
-    for child in node.children:           
-        x= x or search_in_tree(dom, length-1, child)
+    ok= False
+    for child in node.children:
+        ok= ok or search_in_tree(dom, length-1, child)
     if (node.name == dom[length] and length == 0):
-        return True    
-    return x
+        ok= True
+    return ok	
 
 def menu():
     print('Enter 1 to create a DNS tree from .txt')
@@ -95,10 +96,11 @@ def menu():
                 dom = input("Insert the domain name to search // Ex: 'google.com' --> ")
                 parsed_dom = dom.split(".")
                 parsed_dom.append("")
+                print(parsed_dom)
                 if (search_in_tree(parsed_dom, len(parsed_dom)-1, root) == True):
-                    print("<",dom,"> was in DNS Tree")
+                    print("<",dom,"> domain name was in DNS Tree")
                 else:
-                    print("<",dom,"> was not in DNS Tree")
+                    print("<",dom,"> domain name was not in DNS Tree")
             else:
                 print("EXIT")
 
