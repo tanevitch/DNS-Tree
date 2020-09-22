@@ -65,8 +65,7 @@ def create_from_txt():
         prev= each.split('\n')
         parsed_dom = prev[0].split(".")
         create_node(parsed_dom)
-
-  
+ 
 
 def search_in_tree(dom, length, node):
     ok= False
@@ -75,6 +74,21 @@ def search_in_tree(dom, length, node):
     if (node.name == dom[length] and length == 0):
         ok= True
     return ok	
+
+def searching (dom):
+    ok = False
+    
+    if (dom[0] == ""):
+        dom.remove("")
+    length = len(dom) -1     
+    for child in root.children:
+        if (child.name == dom[length]):
+            if length > 0:
+                ok = search_in_tree(dom, length, child)
+            else:
+                return True
+    return ok
+
 
 def menu():
     print('Enter 1 to create a DNS tree from .txt')
@@ -95,9 +109,7 @@ def menu():
             if (int(opt) == 3):
                 dom = input("Insert the domain name to search // Ex: 'google.com' --> ")
                 parsed_dom = dom.split(".")
-                parsed_dom.append("")
-                print(parsed_dom)
-                if (search_in_tree(parsed_dom, len(parsed_dom)-1, root) == True):
+                if (searching(parsed_dom)):
                     print("<",dom,"> domain name was in DNS Tree")
                 else:
                     print("<",dom,"> domain name was not in DNS Tree")
