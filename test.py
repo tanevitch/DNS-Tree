@@ -68,12 +68,16 @@ def create_from_txt():
  
 
 def search_in_tree(dom, length, node):
-    ok= False
-    for child in node.children:
-        ok= ok or search_in_tree(dom, length-1, child)
-    if (node.name == dom[length] and length == 0):
+    if (length >=0):
         ok= True
-    return ok	
+        if (node.name != dom[length]):
+            ok= False
+        if (node.children == () and length != 0):
+            ok= False
+        for child in node.children:
+            ok= ok and search_in_tree(dom, length-1, child)
+        
+        return ok	
 
 def searching (dom):
     ok = False
@@ -84,7 +88,7 @@ def searching (dom):
     for child in root.children:
         if (child.name == dom[length]):
             if length > 0:
-                ok = search_in_tree(dom, length, child)
+                return search_in_tree(dom, length, child)
             else:
                 return True
     return ok

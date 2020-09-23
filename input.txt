@@ -1,8 +1,12 @@
-www.unlp.edu.ar
-www.info.unlp.edu.ar
-www.exactas.unlp.edu.ar
-www.uba.ar
+unlp.edu.ar
+uba.ar
+redes.unlp.edu.ar
 nic.ar
-www. motorola.com
+practicas.redes.unlp.edu.ar
+motorola.com
+info.unlp.edu.ar
+exactas.unlp.edu.ar
+mail.google.com
+drive.google.com
 pypi.org
 stackoverflow.com
