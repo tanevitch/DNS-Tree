@@ -1,4 +1,4 @@
-from anytree import Node, RenderTree
+from anytree import Node, RenderTree, search
 from anytree.exporter import DotExporter
 
 #este es por si tienen ganas de tener los tld más genéricos ya cargados y no tener que hacerlo a mano
@@ -68,30 +68,24 @@ def create_from_txt():
  
 
 def search_in_tree(dom, length, node):
-    if (length >=0):
-        ok= True
-        if (node.name != dom[length]):
-            ok= False
-        if (node.children == () and length != 0):
-            ok= False
+    ok= False
+    x = True
+    if (length >= 0):
         for child in node.children:
-            ok= ok and search_in_tree(dom, length-1, child)
-        
-        return ok	
+            if (child.name == dom[length]):
+                x= search_in_tree(dom, length-1, child)
+                ok= True    
+                break
+        if (not ok):
+            print("DNS domain name did not exist.")
+            return False
+    return x
 
-def searching (dom):
-    ok = False
-    
+def searching (dom):  
     if (dom[0] == ""):
         dom.remove("")
-    length = len(dom) -1     
-    for child in root.children:
-        if (child.name == dom[length]):
-            if length > 0:
-                return search_in_tree(dom, length, child)
-            else:
-                return True
-    return ok
+    length = len(dom) -1    
+    return search_in_tree(dom, length, root)
 
 
 def menu():
@@ -112,11 +106,8 @@ def menu():
         else:
             if (int(opt) == 3):
                 dom = input("Insert the domain name to search // Ex: 'google.com' --> ")
-                parsed_dom = dom.split(".")
-                if (searching(parsed_dom)):
-                    print("<",dom,"> domain name was in DNS Tree")
-                else:
-                    print("<",dom,"> domain name was not in DNS Tree")
+                parsed_dom = dom.split(".")       
+                print(dom,"was in DNS Tree?", searching(parsed_dom))
             else:
                 print("EXIT")
 
